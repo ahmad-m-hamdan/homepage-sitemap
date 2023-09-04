@@ -34,7 +34,7 @@ class Homepage_Sitemap
      *
      * @since    1.0.0
      * @access   protected
-     * @var      Plugin_Name_Loader    $loader    Maintains and registers all hooks for the plugin.
+     * @var      Homepage_Sitemap_Loader    $loader    Maintains and registers all hooks for the plugin.
      */
     protected $loader;
 
@@ -83,10 +83,8 @@ class Homepage_Sitemap
      *
      * Include the following files that make up the plugin:
      *
-     * - Plugin_Name_Loader. Orchestrates the hooks of the plugin.
-     * - Plugin_Name_i18n. Defines internationalization functionality.
-     * - Plugin_Name_Admin. Defines all hooks for the admin area.
-     * - Plugin_Name_Public. Defines all hooks for the public side of the site.
+     * - Homepage_Sitemap_Loader. Orchestrates the hooks of the plugin.
+     * - Homepage_Sitemap_Admin. Defines all hooks for the admin area.
      *
      * Create an instance of the loader which will be used to register the hooks
      * with WordPress.
@@ -96,6 +94,10 @@ class Homepage_Sitemap
      */
     private function load_dependencies()
     {
+        /**
+         * The class responsible for providing miscellaneous helper functions
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-helper.php';
 
         /**
          * The class responsible for orchestrating the actions and filters of the
@@ -107,6 +109,11 @@ class Homepage_Sitemap
          * The class responsible for defining all actions that occur in the admin area.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-homepage-sitemap-admin.php';
+
+        /**
+         * The class responsible for defining all crawling actions.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-crawler.php';
 
         $this->loader = new Homepage_Sitemap_Loader();
     }
@@ -122,9 +129,16 @@ class Homepage_Sitemap
     {
 
         $plugin_admin = new Homepage_Sitemap_Admin($this->get_plugin_name(), $this->get_version());
+        $crawler = new Crawler();
 
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+        $this->loader->add_action('admin_menu', $plugin_admin, 'homepage_sitemap_add_menu');
+
+        // Crawler AJAX actions
+        $this->loader->add_action('homepage_sitemap_generation_event', $crawler, 'run_ajax');
+        $this->loader->add_action('wp_ajax_crawl_store_links', $crawler, 'run_ajax');
+        $this->loader->add_action('wp_ajax_get_results', $crawler, 'get_stored_internal_links_ajax');
     }
 
     /**
@@ -153,7 +167,7 @@ class Homepage_Sitemap
      * The reference to the class that orchestrates the hooks with the plugin.
      *
      * @since     1.0.0
-     * @return    Plugin_Name_Loader    Orchestrates the hooks of the plugin.
+     * @return    Homepage_Sitemap_Loader    Orchestrates the hooks of the plugin.
      */
     public function get_loader()
     {

@@ -101,4 +101,33 @@ class Homepage_Sitemap_Admin
         // Pass JS parameters
         wp_localize_script($this->plugin_name, 'ajax_object', ['ajax_url' => admin_url('admin-ajax.php')]);
     }
+
+    /**
+     * Register the plugin's menu item under "Tools"
+     * 
+     * @since 1.0.0
+     */
+    public function homepage_sitemap_add_menu()
+    {
+        add_management_page(
+            'Homepage Sitemap Generator',   // Page title
+            'Homepage Sitemap',   // Menu title
+            'manage_options',     // Capability required to access
+            'homepage-sitemap',   // Menu slug
+            [$this, 'display_admin_page'] // Callback function to render the page
+        );
+    }
+
+    // Callback function to render the admin page
+    public function display_admin_page()
+    {
+?>
+        <div class="wrap">
+            <h2>Homepage Sitemap Generator</h2>
+            <button id="crawl-button" class="button">Crawl and Store Links</button>
+            <button id="view-button" class="button">View Stored Results</button>
+            <div class="results"></div>
+        </div>
+<?php
+    }
 }
