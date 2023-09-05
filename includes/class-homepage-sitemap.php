@@ -76,6 +76,7 @@ class Homepage_Sitemap
 
         $this->load_dependencies();
         $this->define_admin_hooks();
+        $this->define_public_hooks();
     }
 
     /**
@@ -111,6 +112,12 @@ class Homepage_Sitemap
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-homepage-sitemap-admin.php';
 
         /**
+         * The class responsible for defining all actions that occur in the public-facing
+         * side of the site.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-homepage-sitemap-public.php';
+
+        /**
          * The class responsible for defining all crawling actions.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-crawler.php';
@@ -139,6 +146,22 @@ class Homepage_Sitemap
         $this->loader->add_action('homepage_sitemap_generation_event', $crawler, 'run_ajax');
         $this->loader->add_action('wp_ajax_crawl_store_links', $crawler, 'run_ajax');
         $this->loader->add_action('wp_ajax_get_results', $crawler, 'get_stored_internal_links_ajax');
+    }
+
+    /**
+     * Register all of the hooks related to the public-facing functionality
+     * of the plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function define_public_hooks()
+    {
+
+        $plugin_public = new Homepage_Sitemap_Public($this->get_plugin_name(), $this->get_version());
+
+        $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
+        $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
     }
 
     /**
