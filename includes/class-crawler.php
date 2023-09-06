@@ -138,7 +138,13 @@ class Crawler
      */
     public function get_stored_internal_links_ajax()
     {
-        wp_send_json($this->get_stored_internal_links());
+        $run = $this->get_stored_internal_links();
+        if (is_array($run)) {
+            wp_send_json($run);
+        } else {
+            $error = new WP_Error(404, 'List of internal links is either missing from the database or wasn\'t stored properly. Please try to generate a new crawl process.', '');
+            wp_send_json_error($error, 404);
+        }
     }
 
     /**
@@ -264,6 +270,12 @@ class Crawler
      */
     public function run_ajax()
     {
-        wp_send_json($this->run());
+        $run = $this->run();
+        if (is_array($run)) {
+            wp_send_json($run);
+        } else {
+            $error = new WP_Error(404, 'List of internal links is either missing from the database or wasn\'t stored properly. Please try again later.', '');
+            wp_send_json_error($error, 404);
+        }
     }
 }

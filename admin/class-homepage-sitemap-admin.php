@@ -122,10 +122,10 @@ class Homepage_Sitemap_Admin
     public function display_admin_page()
     {
 ?>
-        <div class="wrap">
+        <div class="homepage-sitemap-admin-container">
             <h2>Homepage Sitemap Generator</h2>
-            <button id="crawl-button" class="button">Crawl and Store Links</button>
-            <button id="view-button" class="button">View Stored Results</button>
+            <button id="crawl-button" class="button">New Crawl</button>
+            <button id="view-button" class="button">View Current Crawl</button>
             <div class="results"></div>
         </div>
 <?php
