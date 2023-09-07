@@ -88,24 +88,6 @@ class Crawler
     }
 
     /**
-     * Converts relative URLs into absolute ones
-     *
-     * @since     1.0.0
-     * @return    string    The absolute version of a link
-     */
-    public function linkAbsoluter($link)
-    {
-        // Check if the link is already an absolute URL.
-        if (filter_var($link, FILTER_VALIDATE_URL)) {
-            return $link;
-        }
-
-        // If it's a relative URL, create the absolute URL.
-        return get_permalink(get_page_by_path($link));
-    }
-
-
-    /**
      * Store a URL's internal links.
      *
      * The function abides by the following criteria
@@ -120,6 +102,8 @@ class Crawler
      */
     public function storeInternalLinks()
     {
+        $helperObj = new Helper();
+
         // Use regular expressions to extract internal links within <body> tag
         preg_match('/<body.*?>(.*?)<\/body>/s', file_get_contents($this->getUrl()), $body_matches);
 
@@ -128,17 +112,17 @@ class Crawler
         // Use regular expressions to extract internal links
         preg_match_all('/<a\s+href=["\']([^"\']+)["\'][^>]*>/', $body_content, $matches);
 
-        // Remove forward slash
-        $matches[1] = array_map([new Helper(), 'removeForwardSlash'], $matches[1]);
-
-        // Remove duplicate URLs
-        $matches[1] = array_unique($matches[1]);
-
-        // Remove external and admin-based links
+        // Remove anchor, external and admin-based links
         $internal_links = array_filter($matches[1], [$this, 'isInternalLink']);
 
         // Transform relative links into absolute
-        $internal_links = array_map([$this, 'linkAbsoluter'], $internal_links);
+        $internal_links = array_map([$helperObj, 'linkAbsoluter'], $internal_links);
+
+        // Remove forward slash
+        $internal_links = array_map([$helperObj, 'removeForwardSlash'], $internal_links);
+
+        // Remove duplicate URLs
+        $internal_links = array_unique($internal_links);
 
         // Store the internal links in wp_options, delete previous entry
         update_option('homepage_internal_links', serialize($internal_links));
