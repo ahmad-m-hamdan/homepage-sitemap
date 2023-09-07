@@ -1,13 +1,8 @@
 <?php
 
-/**
- * The file that defines the Crawler class
- *
- * @since      1.0.0
- *
- * @package    HOMEPAGE_SITEMAP
- * @subpackage HOMEPAGE_SITEMAP/includes
- */
+namespace HomepageSitemap\Includes;
+
+use WP_Error;
 
 /**
  * The Crawler class.
@@ -16,8 +11,9 @@
  * storing crawled homepage data.
  *
  * @since      1.0.0
- * @package    HOMEPAGE_SITEMAP
- * @subpackage HOMEPAGE_SITEMAP/includes
+ *
+ * @package    HomepageSitemap
+ * @subpackage Includes
  */
 class Crawler
 {
@@ -51,7 +47,7 @@ class Crawler
      * @since     1.0.0
      * @return    string    The crawled URL.
      */
-    public function get_url()
+    public function getUrl()
     {
         return $this->url;
     }
@@ -62,7 +58,7 @@ class Crawler
      * @since     1.0.0
      * @return    string    The event name.
      */
-    public function get_scheduled_event_name()
+    public function getScheduledEventName()
     {
         return $this->scheduled_event_name;
     }
@@ -73,9 +69,9 @@ class Crawler
      * @since     1.0.0
      * @return    boolean    True if internal, false otherwise.
      */
-    public function is_internal_link($link)
+    public function isInternalLink($link)
     {
-        return (strpos($link, $this->get_url()) !== false && strpos($link, '/wp-admin') === false) ? true : false;
+        return (strpos($link, $this->getUrl()) !== false && strpos($link, '/wp-admin') === false) ? true : false;
     }
 
     /**
@@ -91,10 +87,10 @@ class Crawler
      * @access   public
      * @return   array    The list of internal links.
      */
-    public function store_internal_links()
+    public function storeInternalLinks()
     {
         // Use regular expressions to extract internal links within <body> tag
-        preg_match('/<body.*?>(.*?)<\/body>/s', file_get_contents($this->get_url()), $body_matches);
+        preg_match('/<body.*?>(.*?)<\/body>/s', file_get_contents($this->getUrl()), $body_matches);
 
         $body_content = $body_matches[1]; // Content within <body> tag
 
@@ -102,13 +98,13 @@ class Crawler
         preg_match_all('/<a\s+href=["\']([^"\']+)["\'][^>]*>/', $body_content, $matches);
 
         // Remove forward slash
-        $matches[1] = array_map(['Helper', 'remove_forward_slash'], $matches[1]);
+        $matches[1] = array_map([new Helper(), 'removeForwardSlash'], $matches[1]);
 
         // Remove duplicate URLs
         $matches[1] = array_unique($matches[1]);
 
         // Remove external and admin-based links
-        $internal_links = array_filter($matches[1], [$this, 'is_internal_link']);
+        $internal_links = array_filter($matches[1], [$this, 'isInternalLink']);
 
         // Store the internal links in wp_options, delete previous entry
         update_option('homepage_internal_links', serialize($internal_links));
@@ -120,7 +116,7 @@ class Crawler
      * @since     1.0.0
      * @return    array    The list of internal links.
      */
-    private function get_stored_internal_links()
+    private function getStoredInternalLinks()
     {
         // Retrieve the results from the options table
         $results = get_option('homepage_internal_links'); // Replace with your option name
@@ -131,18 +127,22 @@ class Crawler
     }
 
     /**
-     * Similar to get_stored_internal_links(), but more specific to AJAX requests
-     * 
+     * Similar to getStoredInternalLinks(), but more specific to AJAX requests
+     *
      * @since     1.0.0
      * @return    string    The JSON string of stored internal links.
      */
-    public function get_stored_internal_links_ajax()
+    public function getStoredInternalLinksAjax()
     {
-        $run = $this->get_stored_internal_links();
+        $run = $this->getStoredInternalLinks();
         if (is_array($run)) {
             wp_send_json($run);
         } else {
-            $error = new WP_Error(404, 'List of internal links is either missing from the database or wasn\'t stored properly. Please try to generate a new crawl process.', '');
+            $error = new WP_Error(
+                404,
+                'List of links wasn\'t stored properly. Please generate a new crawl process.',
+                ''
+            );
             wp_send_json_error($error, 404);
         }
     }
@@ -152,7 +152,7 @@ class Crawler
      *
      * @since     1.0.0
 =    */
-    private function create_sitemap_html_file()
+    private function createSitemapHTMLFile()
     {
         $sitemap_file = ABSPATH . 'sitemap.html'; // Path to the root directory's sitemap.html file
 
@@ -162,7 +162,7 @@ class Crawler
             unlink($sitemap_file);
         }
 
-        $internal_links = $this->get_stored_internal_links();
+        $internal_links = $this->getStoredInternalLinks();
 
         // Create and write the sitemap.html file
         $sitemap_content = '<!DOCTYPE html>';
@@ -188,7 +188,7 @@ class Crawler
         $sitemap_content .= '<body>';
         $sitemap_content .= '<div id="content">';
         $sitemap_content .= '<h1>Homepage Sitemap</h1>';
-        $sitemap_content .= '<p>Generated by Homepage Sitemap Generator plugin. This sitemap is meant to be used by Search Engines</p>';
+        $sitemap_content .= '<p>This sitemap is generated by the Homepage Sitemap Generator plugin</p>';
         $sitemap_content .= '<p>This sitemap contains ' . count($internal_links) . '</p>';
         $sitemap_content .= '<table id="sitemap">';
         $sitemap_content .= '<thead>';
@@ -213,13 +213,13 @@ class Crawler
 
     /**
      * Fetches the homepage's HTML content and saves it in an
-     * index.html file located as the root directory 
+     * index.html file located as the root directory
      *
      * @since     1.0.0
      */
-    private function generate_homepage_html_file()
+    private function generateHomepageHTMLFile()
     {
-        $homepage_content = file_get_contents($this->get_url());
+        $homepage_content = file_get_contents($this->getUrl());
         $index_file = ABSPATH . 'index.html'; // Path to the root directory's index.html file
 
         // Check if the index.html file exists in the root directory
@@ -237,9 +237,9 @@ class Crawler
      *
      * @since     1.0.0
 =    */
-    private function reset_crawl_event_timer()
+    private function resetCrawlEventTimer()
     {
-        $event_name = $this->get_scheduled_event_name();
+        $event_name = $this->getScheduledEventName();
         // Cancel the existing scheduled event
         wp_clear_scheduled_hook($event_name);
         // Reschedule the event to run in an hour
@@ -254,27 +254,31 @@ class Crawler
 =    */
     public function run()
     {
-        $this->reset_crawl_event_timer();
-        $this->store_internal_links();
-        $this->create_sitemap_html_file();
-        $this->generate_homepage_html_file();
+        $this->resetCrawlEventTimer();
+        $this->storeInternalLinks();
+        $this->createSitemapHTMLFile();
+        $this->generateHomepageHTMLFile();
 
-        return $this->get_stored_internal_links();
+        return $this->getStoredInternalLinks();
     }
 
     /**
      * Similar to run(), but more specific to AJAX requests
-     * 
+     *
      * @since     1.0.0
      * @return    string    The JSON string of updated internal links.
      */
-    public function run_ajax()
+    public function runAjax()
     {
         $run = $this->run();
         if (is_array($run)) {
             wp_send_json($run);
         } else {
-            $error = new WP_Error(404, 'List of internal links is either missing from the database or wasn\'t stored properly. Please try again later.', '');
+            $error = new WP_Error(
+                404,
+                'List of internal links wasn\'t stored properly. Please try again later.',
+                ''
+            );
             wp_send_json_error($error, 404);
         }
     }

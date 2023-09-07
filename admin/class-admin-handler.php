@@ -1,13 +1,6 @@
 <?php
 
-/**
- * The admin-specific functionality of the plugin.
- *
- * @since      1.0.0
- *
- * @package    Homepage_Sitemap
- * @subpackage Homepage_Sitemap/admin
- */
+namespace HomepageSitemap\Admin;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -15,12 +8,13 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Homepage_Sitemap
- * @subpackage Homepage_Sitemap/admin
+ * @since 1.0.0
+ *
+ * @package    HomepageSitemap
+ * @subpackage Admin
  */
-class Homepage_Sitemap_Admin
+class AdminHandler
 {
-
     /**
      * The ID of this plugin.
      *
@@ -58,7 +52,7 @@ class Homepage_Sitemap_Admin
      *
      * @since    1.0.0
      */
-    public function enqueue_styles()
+    public function enqueueStyles()
     {
 
         /**
@@ -73,7 +67,13 @@ class Homepage_Sitemap_Admin
          * class.
          */
 
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/homepage-sitemap-admin.css', [], $this->version, 'all');
+        wp_enqueue_style(
+            $this->plugin_name,
+            plugin_dir_url(__FILE__) . 'css/homepage-sitemap-admin.css',
+            [],
+            $this->version,
+            'all'
+        );
     }
 
     /**
@@ -81,7 +81,7 @@ class Homepage_Sitemap_Admin
      *
      * @since    1.0.0
      */
-    public function enqueue_scripts()
+    public function enqueueScripts()
     {
 
         /**
@@ -96,7 +96,13 @@ class Homepage_Sitemap_Admin
          * class.
          */
 
-        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/homepage-sitemap-admin.js', ['jquery'], $this->version, false);
+        wp_enqueue_script(
+            $this->plugin_name,
+            plugin_dir_url(__FILE__) . 'js/homepage-sitemap-admin.js',
+            ['jquery'],
+            $this->version,
+            false
+        );
 
         // Pass JS parameters
         wp_localize_script($this->plugin_name, 'ajax_object', ['ajax_url' => admin_url('admin-ajax.php')]);
@@ -104,30 +110,30 @@ class Homepage_Sitemap_Admin
 
     /**
      * Register the plugin's menu item under "Tools"
-     * 
+     *
      * @since 1.0.0
      */
-    public function homepage_sitemap_add_menu()
+    public function addMenu()
     {
         add_management_page(
             'Homepage Sitemap Generator',   // Page title
             'Homepage Sitemap',   // Menu title
             'manage_options',     // Capability required to access
             'homepage-sitemap',   // Menu slug
-            [$this, 'display_admin_page'] // Callback function to render the page
+            [$this, 'displayAdminPage'] // Callback function to render the page
         );
     }
 
     // Callback function to render the admin page
-    public function display_admin_page()
+    public function displayAdminPage()
     {
-?>
+        echo ('
         <div class="homepage-sitemap-admin-container">
             <h2>Homepage Sitemap Generator</h2>
             <button id="crawl-button" class="button">New Crawl</button>
             <button id="view-button" class="button">View Current Crawl</button>
             <div class="results"></div>
         </div>
-<?php
+        ');
     }
 }

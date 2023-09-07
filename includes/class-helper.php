@@ -1,23 +1,17 @@
 <?php
 
-/**
- * The file that defines the Helper class
- *
- * @since      1.0.0
- *
- * @package    HOMEPAGE_SITEMAP
- * @subpackage HOMEPAGE_SITEMAP/includes
- */
+namespace HomepageSitemap\Includes;
 
 /**
- * The Crawler class.
+ * The Helper class.
  *
  * This is used to define miscellaneous functions that
  * might be needed in other classes
  *
  * @since      1.0.0
- * @package    HOMEPAGE_SITEMAP
- * @subpackage HOMEPAGE_SITEMAP/includes
+ *
+ * @package    HomepageSitemap
+ * @subpackage Includes
  */
 class Helper
 {
@@ -27,7 +21,7 @@ class Helper
      * @since     1.0.0
      * @return    string    The trimmed string.
      */
-    public function remove_forward_slash($link)
+    public function removeForwardSlash($link)
     {
         return rtrim($link, '/');
     }

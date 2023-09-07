@@ -20,7 +20,7 @@ To address the problem at hand, we will create a plugin called "Homepage Sitemap
 
 ### 1. Language and Framework
 
-The core language for this project is PHP, used in accordance with WordPress's fundamentals for custom plugin development. In addition, we used JavaScript (jQuery) to handle AJAX requests initiated via the admin area.
+The core language for this project is PHP, used in accordance with WordPress's fundamentals for custom plugin development and the PSR-12 format. In addition, we used JavaScript (jQuery) to handle AJAX requests initiated via the admin area.
 
 ### 2. Database Storage
 

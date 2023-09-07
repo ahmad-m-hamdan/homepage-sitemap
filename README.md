@@ -39,7 +39,7 @@ Note: The plugin works instantly, and a sitemap is generated automatically upon 
 
 This plugin is developed using the following technologies:
 
-- PHP
+- PHP (PSR-12 format)
 - JavaScript
 - WordPress best practices
 

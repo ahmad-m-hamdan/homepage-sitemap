@@ -1,13 +1,6 @@
 <?php
 
-/**
- * Fired during plugin activation
- *
- * @since      1.0.0
- *
- * @package    HOMEPAGE_SITEMAP
- * @subpackage HOMEPAGE_SITEMAP/includes
- */
+namespace HomepageSitemap\Includes;
 
 /**
  * Fired during plugin activation.
@@ -15,12 +8,12 @@
  * This class defines all code necessary to run during the plugin's activation.
  *
  * @since      1.0.0
- * @package    HOMEPAGE_SITEMAP
- * @subpackage HOMEPAGE_SITEMAP/includes
+ *
+ * @package    HomepageSitemap
+ * @subpackage Includes
  */
-class Homepage_Sitemap_Activator
+class Activator
 {
-
     /**
      * Function to handle events that occur during plugin activation
      *

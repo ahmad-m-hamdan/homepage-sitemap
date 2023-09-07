@@ -1,13 +1,6 @@
 <?php
 
-/**
- * The public-facing functionality of the plugin.
- *
- * @since      1.0.0
- *
- * @package    Homepage_Sitemap
- * @subpackage Homepage_Sitemap/public
- */
+namespace HomepageSitemap\FrontEnd;
 
 /**
  * The public-facing functionality of the plugin.
@@ -15,12 +8,13 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the public-facing stylesheet and JavaScript.
  *
- * @package    Homepage_Sitemap
- * @subpackage Homepage_Sitemap/public
+ * @since 1.0.0
+ *
+ * @package    HomepageSitemap
+ * @subpackage FrontEnd
  */
-class Homepage_Sitemap_Public
+class FrontEndHandler
 {
-
     /**
      * The ID of this plugin.
      *
@@ -58,7 +52,7 @@ class Homepage_Sitemap_Public
      *
      * @since    1.0.0
      */
-    public function enqueue_styles()
+    public function enqueueStyles()
     {
 
         /**
@@ -73,7 +67,13 @@ class Homepage_Sitemap_Public
          * class.
          */
 
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/homepage-sitemap-public.css', [], $this->version, 'all');
+        wp_enqueue_style(
+            $this->plugin_name,
+            plugin_dir_url(__FILE__) . 'css/homepage-sitemap-public.css',
+            [],
+            $this->version,
+            'all'
+        );
     }
 
     /**
@@ -81,7 +81,7 @@ class Homepage_Sitemap_Public
      *
      * @since    1.0.0
      */
-    public function enqueue_scripts()
+    public function enqueueScripts()
     {
 
         /**
@@ -96,6 +96,12 @@ class Homepage_Sitemap_Public
          * class.
          */
 
-        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/homepage-sitemap-public.js', ['jquery'], $this->version, false);
+        wp_enqueue_script(
+            $this->plugin_name,
+            plugin_dir_url(__FILE__) . 'js/homepage-sitemap-public.js',
+            ['jquery'],
+            $this->version,
+            false
+        );
     }
 }

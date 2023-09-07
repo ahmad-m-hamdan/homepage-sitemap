@@ -1,13 +1,6 @@
 <?php
 
-/**
- * Fired during plugin deactivation
- *
- * @since      1.0.0
- *
- * @package    HOMEPAGE_SITEMAP
- * @subpackage HOMEPAGE_SITEMAP/includes
- */
+namespace HomepageSitemap\Includes;
 
 /**
  * Fired during plugin deactivation.
@@ -15,12 +8,12 @@
  * This class defines all code necessary to run during the plugin's deactivation.
  *
  * @since      1.0.0
- * @package    HOMEPAGE_SITEMAP
- * @subpackage HOMEPAGE_SITEMAP/includes
+ *
+ * @package    HomepageSitemap
+ * @subpackage Includes
  */
-class Homepage_Sitemap_Deactivator
+class Deactivator
 {
-
     /**
      * Function to handle events that occur during plugin deactivation
      *

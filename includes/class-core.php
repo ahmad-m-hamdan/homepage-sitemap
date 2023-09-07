@@ -1,16 +1,9 @@
 <?php
 
-/**
- * The file that defines the core plugin class
- *
- * A class definition that includes attributes and functions used across both the
- * public-facing side of the site and the admin area.
- *
- * @since      1.0.0
- *
- * @package    HOMEPAGE_SITEMAP
- * @subpackage HOMEPAGE_SITEMAP/includes
- */
+namespace HomepageSitemap\Includes;
+
+use HomepageSitemap\Admin\AdminHandler;
+use HomepageSitemap\FrontEnd\FrontEndHandler;
 
 /**
  * The core plugin class.
@@ -22,19 +15,19 @@
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    HOMEPAGE_SITEMAP
- * @subpackage HOMEPAGE_SITEMAP/includes
+ *
+ * @package    HomepageSitemap
+ * @subpackage Includes
  */
-class Homepage_Sitemap
+class Core
 {
-
     /**
      * The loader that's responsible for maintaining and registering all hooks that power
      * the plugin.
      *
      * @since    1.0.0
      * @access   protected
-     * @var      Homepage_Sitemap_Loader    $loader    Maintains and registers all hooks for the plugin.
+     * @var      Loader    $loader    Maintains and registers all hooks for the plugin.
      */
     protected $loader;
 
@@ -74,9 +67,9 @@ class Homepage_Sitemap
         }
         $this->plugin_name = 'homepage-sitemap';
 
-        $this->load_dependencies();
-        $this->define_admin_hooks();
-        $this->define_public_hooks();
+        $this->loadDependencies();
+        $this->defineAdminHooks();
+        $this->definePublicHooks();
     }
 
     /**
@@ -93,7 +86,7 @@ class Homepage_Sitemap
      * @since    1.0.0
      * @access   private
      */
-    private function load_dependencies()
+    private function loadDependencies()
     {
         /**
          * The class responsible for providing miscellaneous helper functions
@@ -104,25 +97,25 @@ class Homepage_Sitemap
          * The class responsible for orchestrating the actions and filters of the
          * core plugin.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-homepage-sitemap-loader.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-loader.php';
 
         /**
          * The class responsible for defining all actions that occur in the admin area.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-homepage-sitemap-admin.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-admin-handler.php';
 
         /**
          * The class responsible for defining all actions that occur in the public-facing
          * side of the site.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-homepage-sitemap-public.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'front-end/class-front-end-handler.php';
 
         /**
          * The class responsible for defining all crawling actions.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-crawler.php';
 
-        $this->loader = new Homepage_Sitemap_Loader();
+        $this->loader = new Loader();
     }
 
     /**
@@ -132,20 +125,20 @@ class Homepage_Sitemap
      * @since    1.0.0
      * @access   private
      */
-    private function define_admin_hooks()
+    private function defineAdminHooks()
     {
 
-        $plugin_admin = new Homepage_Sitemap_Admin($this->get_plugin_name(), $this->get_version());
+        $adminHandler = new AdminHandler($this->getPluginName(), $this->getVersion());
         $crawler = new Crawler();
 
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
-        $this->loader->add_action('admin_menu', $plugin_admin, 'homepage_sitemap_add_menu');
+        $this->loader->addAction('admin_enqueue_scripts', $adminHandler, 'enqueueStyles');
+        $this->loader->addAction('admin_enqueue_scripts', $adminHandler, 'enqueueScripts');
+        $this->loader->addAction('admin_menu', $adminHandler, 'addMenu');
 
         // Crawler AJAX actions
-        $this->loader->add_action('homepage_sitemap_generation_event', $crawler, 'run_ajax');
-        $this->loader->add_action('wp_ajax_crawl_store_links', $crawler, 'run_ajax');
-        $this->loader->add_action('wp_ajax_get_results', $crawler, 'get_stored_internal_links_ajax');
+        $this->loader->addAction('homepage_sitemap_generation_event', $crawler, 'runAjax');
+        $this->loader->addAction('wp_ajax_crawl_store_links', $crawler, 'runAjax');
+        $this->loader->addAction('wp_ajax_get_results', $crawler, 'getStoredInternalLinksAjax');
     }
 
     /**
@@ -155,13 +148,13 @@ class Homepage_Sitemap
      * @since    1.0.0
      * @access   private
      */
-    private function define_public_hooks()
+    private function definePublicHooks()
     {
 
-        $plugin_public = new Homepage_Sitemap_Public($this->get_plugin_name(), $this->get_version());
+        $frontEndHandler = new FrontEndHandler($this->getPluginName(), $this->getVersion());
 
-        $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
-        $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+        $this->loader->addAction('wp_enqueue_scripts', $frontEndHandler, 'enqueueStyles');
+        $this->loader->addAction('wp_enqueue_scripts', $frontEndHandler, 'enqueueScripts');
     }
 
     /**
@@ -181,20 +174,9 @@ class Homepage_Sitemap
      * @since     1.0.0
      * @return    string    The name of the plugin.
      */
-    public function get_plugin_name()
+    public function getPluginName()
     {
         return $this->plugin_name;
-    }
-
-    /**
-     * The reference to the class that orchestrates the hooks with the plugin.
-     *
-     * @since     1.0.0
-     * @return    Homepage_Sitemap_Loader    Orchestrates the hooks of the plugin.
-     */
-    public function get_loader()
-    {
-        return $this->loader;
     }
 
     /**
@@ -203,7 +185,7 @@ class Homepage_Sitemap
      * @since     1.0.0
      * @return    string    The version number of the plugin.
      */
-    public function get_version()
+    public function getVersion()
     {
         return $this->version;
     }
