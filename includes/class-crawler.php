@@ -71,8 +71,39 @@ class Crawler
      */
     public function isInternalLink($link)
     {
-        return (strpos($link, $this->getUrl()) !== false && strpos($link, '/wp-admin') === false) ? true : false;
+        $baseUrl = $this->getUrl();
+
+        // Check if the link is an anchor, or absolute and starts with the base URL.
+        if (strpos($link, '#') === 0 || strpos($link, $baseUrl) === 0) {
+            return true;
+        }
+
+        // Check if the link is relative and doesn't point to /wp-admin.
+        if (strpos($link, '/') === 0 && strpos($link, '/wp-admin') !== 0) {
+            return true;
+        }
+
+        // If neither condition is met, it's not an internal link.
+        return false;
     }
+
+    /**
+     * Converts relative URLs into absolute ones
+     *
+     * @since     1.0.0
+     * @return    string    The absolute version of a link
+     */
+    public function linkAbsoluter($link)
+    {
+        // Check if the link is already an absolute URL.
+        if (filter_var($link, FILTER_VALIDATE_URL)) {
+            return $link;
+        }
+
+        // If it's a relative URL, create the absolute URL.
+        return get_permalink(get_page_by_path($link));
+    }
+
 
     /**
      * Store a URL's internal links.
@@ -105,6 +136,9 @@ class Crawler
 
         // Remove external and admin-based links
         $internal_links = array_filter($matches[1], [$this, 'isInternalLink']);
+
+        // Transform relative links into absolute
+        $internal_links = array_map([$this, 'linkAbsoluter'], $internal_links);
 
         // Store the internal links in wp_options, delete previous entry
         update_option('homepage_internal_links', serialize($internal_links));
