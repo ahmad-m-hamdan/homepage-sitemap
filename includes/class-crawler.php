@@ -152,6 +152,9 @@ class Crawler
      */
     public function getStoredInternalLinksAjax()
     {
+        if (!wp_doing_ajax()) {
+            return;
+        }
         $run = $this->getStoredInternalLinks();
         if (is_array($run)) {
             wp_send_json($run);
@@ -288,6 +291,9 @@ class Crawler
      */
     public function runAjax()
     {
+        if (!wp_doing_ajax()) {
+            return;
+        }
         $run = $this->run();
         if (is_array($run)) {
             wp_send_json($run);
