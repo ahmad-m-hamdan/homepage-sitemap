@@ -64,30 +64,6 @@ class Crawler
     }
 
     /**
-     * Checks if a link is internal and non-admin.
-     *
-     * @since     1.0.0
-     * @return    boolean    True if internal, false otherwise.
-     */
-    public function isInternalLink($link)
-    {
-        $baseUrl = $this->getUrl();
-
-        // Check if the link is an anchor, or absolute and starts with the base URL.
-        if (strpos($link, '#') === 0 || strpos($link, $baseUrl) === 0) {
-            return true;
-        }
-
-        // Check if the link is relative and doesn't point to /wp-admin.
-        if (strpos($link, '/') === 0 && strpos($link, '/wp-admin') !== 0) {
-            return true;
-        }
-
-        // If neither condition is met, it's not an internal link.
-        return false;
-    }
-
-    /**
      * Store a URL's internal links.
      *
      * The function abides by the following criteria
@@ -103,9 +79,10 @@ class Crawler
     public function storeInternalLinks()
     {
         $helperObj = new Helper();
+        $url = $this->getUrl();
 
         // Use regular expressions to extract internal links within <body> tag
-        preg_match('/<body.*?>(.*?)<\/body>/s', file_get_contents($this->getUrl()), $body_matches);
+        preg_match('/<body.*?>(.*?)<\/body>/s', file_get_contents($url), $body_matches);
 
         $body_content = $body_matches[1]; // Content within <body> tag
 
@@ -113,7 +90,10 @@ class Crawler
         preg_match_all('/<a\s+href=["\']([^"\']+)["\'][^>]*>/', $body_content, $matches);
 
         // Remove anchor, external and admin-based links
-        $internal_links = array_filter($matches[1], [$this, 'isInternalLink']);
+        $internal_links = array_filter($matches[1], function ($item) use ($url) {
+            $helperObjInternal = new Helper();
+            return $helperObjInternal->isInternalLink($url, $item);
+        });
 
         // Transform relative links into absolute
         $internal_links = array_map([$helperObj, 'linkAbsoluter'], $internal_links);

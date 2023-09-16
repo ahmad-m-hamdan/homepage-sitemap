@@ -55,7 +55,7 @@ class Helper
      * Converts relative URLs into absolute ones
      *
      * @since     1.0.0
-     *  
+     *
      * @param     string    $link
      * @return    string    The absolute version of a link
      */
