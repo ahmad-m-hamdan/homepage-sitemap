@@ -1,5 +1,9 @@
 <?php
 
+namespace HomepageSitemap;
+
+require_once __DIR__ . '/autoload.php';
+
 /**
  * This file is read by WordPress to generate the plugin information in the plugin
  * admin area. This file also includes all of the dependencies used by the plugin,
@@ -26,28 +30,8 @@ use HomepageSitemap\Includes\Deactivator;
  */
 define('HOMEPAGE_SITEMAP_GENERATOR_VERSION', '1.0.0');
 
-// Schedules the sitemap generation event every hour
-function activateHomepageSitemapGenerationEvent()
-{
-    require_once plugin_dir_path(__FILE__) . 'includes/class-activator.php';
-    Activator::activate();
-}
-
-// Remove the scheduled event when the plugin is deactivated or your theme is deactivated
-function deactivateHomepageSitemapGenerationEvent()
-{
-    require_once plugin_dir_path(__FILE__) . 'includes/class-deactivator.php';
-    Deactivator::deactivate();
-}
-
-register_activation_hook(__FILE__, 'activateHomepageSitemapGenerationEvent');
-register_deactivation_hook(__FILE__, 'deactivateHomepageSitemapGenerationEvent');
-
-/**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-require plugin_dir_path(__FILE__) . 'includes/class-core.php';
+register_activation_hook(__FILE__, [new Activator(), 'activate']);
+register_deactivation_hook(__FILE__, [new Deactivator(), 'deactivate']);
 
 /**
  * Begins execution of the plugin.
@@ -60,7 +44,6 @@ require plugin_dir_path(__FILE__) . 'includes/class-core.php';
  */
 function run_homepage_sitemap()
 {
-
     $plugin = new Core();
     $plugin->run();
 }

@@ -19,6 +19,8 @@ class Helper
      * Removes trailing forward slash from a string
      *
      * @since     1.0.0
+     *
+     * @param     string    $link
      * @return    string    The trimmed string.
      */
     public function removeForwardSlash($link)

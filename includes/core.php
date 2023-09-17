@@ -88,32 +88,32 @@ class Core
      */
     private function loadDependencies()
     {
-        /**
-         * The class responsible for providing miscellaneous helper functions
-         */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-helper.php';
+        // /**
+        //  * The class responsible for providing miscellaneous helper functions
+        //  */
+        // require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-helper.php';
 
-        /**
-         * The class responsible for orchestrating the actions and filters of the
-         * core plugin.
-         */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-loader.php';
+        // /**
+        //  * The class responsible for orchestrating the actions and filters of the
+        //  * core plugin.
+        //  */
+        // require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-loader.php';
 
-        /**
-         * The class responsible for defining all actions that occur in the admin area.
-         */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-admin-handler.php';
+        // /**
+        //  * The class responsible for defining all actions that occur in the admin area.
+        //  */
+        // require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-admin-handler.php';
 
-        /**
-         * The class responsible for defining all actions that occur in the public-facing
-         * side of the site.
-         */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'front-end/class-front-end-handler.php';
+        // /**
+        //  * The class responsible for defining all actions that occur in the public-facing
+        //  * side of the site.
+        //  */
+        // require_once plugin_dir_path(dirname(__FILE__)) . 'front-end/class-front-end-handler.php';
 
-        /**
-         * The class responsible for defining all crawling actions.
-         */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-crawler.php';
+        // /**
+        //  * The class responsible for defining all crawling actions.
+        //  */
+        // require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-crawler.php';
 
         $this->loader = new Loader();
     }
