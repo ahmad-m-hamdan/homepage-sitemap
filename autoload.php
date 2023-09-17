@@ -1,9 +1,6 @@
 <?php
 
 spl_autoload_register(function ($class) {
-    // Define the base directory where your plugin's classes are stored.
-    $baseDir = __DIR__; // Use the appropriate base directory.
-
     // Remove the initial part of the namespace.
     $class = preg_replace('/^HomepageSitemap\\\/i', '', $class);
 
@@ -14,7 +11,7 @@ spl_autoload_register(function ($class) {
     $class = str_replace('\\', DIRECTORY_SEPARATOR, $class);
 
     // Define the full path to the class file.
-    $file = "{$baseDir}" . DIRECTORY_SEPARATOR . "{$class}.php";
+    $file = __DIR__ . DIRECTORY_SEPARATOR . "{$class}.php";
 
 
     // Check if the class file exists and require it.
