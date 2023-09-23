@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+    verbose="true"
+    colors="true"
+>
+    <testsuites>
+        <testsuite name="My Test Suite">
+            <!-- Define the directory where your tests are located -->
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <!-- Add other PHPUnit configuration settings as needed -->
+</phpunit>
